@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>MF_SimpleVisual — Elements</title>
+<link rel="stylesheet" href="assets/docs.css">
+</head>
+<body>
+
+<nav>
+    <div class="title"><a href="index.html">MF_SimpleVisual</a></div>
+    <div class="version">v0.8.0 · format v1</div>
+    <div class="search">
+        <input id="filter" type="search" placeholder="Search this page…" aria-label="Search this page" autocomplete="off">
+        <kbd>/</kbd>
+    </div>
+    <div id="results" role="listbox"></div>
+    <ul id="toc">
+        <li><a href="index.html">← Overview</a></li>
+        <li class="group">Elements</li>
+        <li><a href="#common">Common properties</a></li>
+        <li><a href="#window">window / text / button</a></li>
+        <li><a href="#picture">picture</a></li>
+        <li><a href="#shape">shape</a></li>
+        <li><a href="#gauge">gauge</a></li>
+        <li><a href="#particles">particles</a></li>
+        <li><a href="#command">command</a></li>
+        <li><a href="#list">list</a></li>
+        <li><a href="#template">Row templates</a></li>
+        <li><a href="#states">States and sounds</a></li>
+        <li><a href="#parent">Nested elements</a></li>
+        <li class="group">Pages</li>
+        <li><a href="format.html">File format →</a></li>
+        <li><a href="actions.html">Actions &amp; scenes →</a></li>
+        <li><a href="api.html">Script API &amp; versions →</a></li>
+    </ul>
+</nav>
+
+<main>
+
+<h1>Elements</h1>
+<p class="lead"><code>scenes.&lt;X&gt;.elements</code> — an array. Types: <code>window text button picture gauge shape command list particles</code> (<code>MF.SimpleVisual.ELEMENT_TYPES</code>).</p>
+<pre><code>{ "id": "logo",  "type": "picture", "image": "pictures/Logo", "anchor": "top", "y": 8, "z": -1 }
+{ "id": "steps", "type": "text",    "text": "Steps: \\V[1]", "x": 20, "y": 560 }
+{ "id": "quit",  "type": "button",  "text": "To map", "action": { "type": "back" } }</code></pre>
+
+<!-- ================================================================== -->
+<h2 id="common">Common properties</h2>
+<table>
+    <tr><th>Property</th><th>Description</th></tr>
+    <tr><td><code>id</code></td><td>Required, unique in the scene</td></tr>
+    <tr><td><code>type</code></td><td>Element type</td></tr>
+    <tr><td><code>x y width height anchor</code></td><td>As windows; without a size — natural size</td></tr>
+    <tr><td><code>z</code></td><td><code>&lt; 0</code> — behind windows, <code>&gt;= 0</code> — above</td></tr>
+    <tr><td><code>rotation</code></td><td>Degrees around the centre, expressions</td></tr>
+    <tr><td><code>visible</code>, <code>condition</code></td><td>Visibility; <a href="actions.html#conditions">condition</a> checked every 10 frames</td></tr>
+    <tr><td><code>opacity</code></td><td>window-like — frame; others — whole element</td></tr>
+    <tr><td><code>parent</code></td><td><a href="#parent">Nested elements</a></td></tr>
+    <tr><td><code>hud hideOnMessage hideOnEvent fadeFrames fadeUnderPlayer</code></td><td><a href="actions.html#hud">HUD</a></td></tr>
+    <tr><td><code>enabled hover pressed disabled blink blinkMin blinkTarget</code></td><td><a href="#states">States</a></td></tr>
+    <tr><td><code>hoverSound clickSound disabledSound</code></td><td><a href="#states">Sounds</a></td></tr>
+</table>
+
+<!-- ================================================================== -->
+<h2 id="window">window / text / button</h2>
+<table>
+    <tr><th>Property</th><th>Description</th></tr>
+    <tr><td><code>text</code></td><td>Escape codes <code>\V \N \C \I</code>, MF.Text codes, tokens, <code>\n</code>. Refreshed when values change</td></tr>
+    <tr><td><code>align</code></td><td><code>left center right</code> (button — <code>center</code>)</td></tr>
+    <tr><td><code>rows</code></td><td>Rows for <code>"height": "auto"</code></td></tr>
+    <tr><td><code>windowskin padding backOpacity fontFace fontSize</code> + text style</td><td>Style; the scene theme applies</td></tr>
+    <tr><td><code>fill fill2 gradient borderColor borderWidth radius</code></td><td>Own background instead of the windowskin</td></tr>
+    <tr><td><code>frame</code></td><td>Frame on / off</td></tr>
+    <tr><td><code>action</code></td><td>button: <a href="actions.html#actions">action</a> or array</td></tr>
+</table>
+<p><code>text</code> has no frame or background by default.</p>
+
+<!-- ================================================================== -->
+<h2 id="picture">picture</h2>
+<table>
+    <tr><th>Property</th><th>Description</th></tr>
+    <tr><td><code>image</code></td><td><code>"folder/name"</code> in <code>img/</code> (default <code>pictures</code>); tokens allowed: <code>"pictures/{hero.faceName}"</code></td></tr>
+    <tr><td><code>fit</code></td><td><code>stretch contain cover none</code></td></tr>
+    <tr><td><code>radius</code></td><td>Rounded corners</td></tr>
+    <tr><td><code>offsetX offsetY zoom imageRotation</code></td><td>Image inside the frame (clipped)</td></tr>
+    <tr><td><code>tile</code></td><td><code>none repeat repeatX repeatY</code></td></tr>
+    <tr><td><code>cropX cropY cropWidth cropHeight</code></td><td>Part of the source, px</td></tr>
+    <tr><td><code>flipX flipY smooth</code></td><td>Mirror; <code>smooth: false</code> — pixel art</td></tr>
+    <tr><td><code>scrollX scrollY</code></td><td>px per second (elements only)</td></tr>
+    <tr><td><code>brightness contrast saturation</code></td><td>%, 100 = unchanged</td></tr>
+    <tr><td><code>grayscale sepia invert</code></td><td>0–100 %</td></tr>
+    <tr><td><code>hue blur</code></td><td>Degrees; px</td></tr>
+    <tr><td><code>tint tintAmount</code></td><td>Colour over the image, 0–100 % (default 50)</td></tr>
+</table>
+<p>A missing file with tokens gives an empty element, not the "Failed to load" screen.</p>
+
+<!-- ================================================================== -->
+<h2 id="shape">shape</h2>
+<p><code>fill</code> (default white), <code>fill2</code> + <code>gradient</code> (<code>vertical</code> / <code>horizontal</code>), <code>borderColor borderWidth radius</code>.</p>
+
+<!-- ================================================================== -->
+<h2 id="gauge">gauge</h2>
+<table>
+    <tr><th>Property</th><th>Description</th></tr>
+    <tr><td><code>variable</code> + <code>max</code></td><td><code>max</code> — number or <code>{ "variable": n }</code></td></tr>
+    <tr><td><code>actor</code> / <code>member</code> + <code>stat</code></td><td>Actor id or party index (0 — first); <code>hp mp tp</code></td></tr>
+    <tr><td><code>label format fontSize color1 color2</code></td><td><code>format</code>: <code>"{value}/{max}"</code></td></tr>
+</table>
+
+<!-- ================================================================== -->
+<h2 id="particles">particles</h2>
+<pre><code>{ "id": "snow", "type": "particles", "preset": "snow", "width": "100%", "height": "100%", "z": -1, "count": 150, "wind": 0.5, "mouseRepel": 80 }</code></pre>
+<p>Presets: <code>rain snow embers fireflies stars</code>. Overridable: <code>count shape</code> (<code>dot streak</code>) <code>image color sizeMin sizeMax speedMin speedMax angle spread opacityMin opacityMax spawn</code> (<code>top bottom area</code>) <code>lifeMin lifeMax sway wind gravity spin flicker pulse fade alignToMotion blend</code> (<code>normal add</code>) <code>mouseRepel</code>. Numbers accept expressions. Frozen in the editor.</p>
+
+<!-- ================================================================== -->
+<h2 id="command">command</h2>
+<table>
+    <tr><th>Property</th><th>Description</th></tr>
+    <tr><td><code>items</code></td><td><code>[{ "text", "action", "enabled": cond, "visible": cond }]</code></td></tr>
+    <tr><td><code>cols align rows</code></td><td>Layout</td></tr>
+    <tr><td><code>template rowHeight rowBackground</code></td><td>Row drawing</td></tr>
+    <tr><td><code>rowHover rowDisabled</code></td><td>Row states</td></tr>
+    <tr><td><code>frame arrows</code>, style, background</td><td>As <code>window</code></td></tr>
+    <tr><td><code>onCancel</code></td><td>Action on cancel</td></tr>
+</table>
+
+<!-- ================================================================== -->
+<h2 id="list">list</h2>
+<table>
+    <tr><th>Property</th><th>Description</th></tr>
+    <tr><td><code>source</code></td><td><code>items weapons armors keyItems allItems party skills</code> (+ <code>actor</code>/<code>member</code>) <code>database</code> (+ <code>table</code>: <code>enemies</code>…) <code>static</code> (+ <code>data</code>)</td></tr>
+    <tr><td><code>ids</code></td><td>Keep only these ids</td></tr>
+    <tr><td><code>cols rows rowHeight rowBackground</code></td><td>Layout</td></tr>
+    <tr><td><code>template</code></td><td><a href="#template">Row template</a>; default depends on <code>source</code></td></tr>
+    <tr><td><code>emptyText</code></td><td>Text of an empty list</td></tr>
+    <tr><td><code>rowEnabled</code></td><td>Condition or expression with row fields: <code>"{count} &gt; 0"</code></td></tr>
+    <tr><td><code>action onCancel</code></td><td><code>{field}</code> placeholders from the row: <code>{ "type": "variable", "id": 5, "value": "{id}" }</code></td></tr>
+</table>
+<p>Other elements show the selected row: <code>"{list.name}\n{list.description}"</code> (<code>list</code> — the list id).</p>
+
+<!-- ================================================================== -->
+<h2 id="template">Row templates</h2>
+<p>Child types: <code>text icon face picture shape gauge actorGauge actorState</code>. <code>x y width height anchor</code> are relative to the row content area (default anchor <code>left</code>), accept row fields: <code>"{hpRate}%"</code>. <code>{selected}</code> and <code>{enabled}</code> are available.</p>
+<table>
+    <tr><th>Type</th><th>Properties</th></tr>
+    <tr><td><code>text</code></td><td><code>text align fontSize</code></td></tr>
+    <tr><td><code>icon</code></td><td><code>icon</code> (default <code>"{iconIndex}"</code>)</td></tr>
+    <tr><td><code>face</code></td><td><code>faceName faceIndex</code></td></tr>
+    <tr><td><code>gauge</code></td><td><code>stat</code> or <code>value</code> + <code>max</code>, <code>label color1 color2</code></td></tr>
+    <tr><td><code>actorGauge</code></td><td>Animated MZ gauge, <code>stat</code></td></tr>
+    <tr><td><code>actorState</code></td><td>Animated state icon (battle)</td></tr>
+</table>
+
+<!-- ================================================================== -->
+<h2 id="states">States and sounds</h2>
+<pre><code>{ "id": "buy", "type": "button", "text": "Buy", "enabled": { "gold": 100, "op": "&gt;=" },
+  "fill": "#2a3040", "hover": { "fill": "#3a5a8a" }, "pressed": { "fill": "#203048" },
+  "disabled": { "textColor": "#808080", "opacity": 150 },
+  "hoverSound": "Cursor2", "disabledSound": "Buzzer2" }</code></pre>
+<ul>
+    <li><code>hover</code>, <code>pressed</code> (over hover), <code>disabled</code> — overrides of own properties.</li>
+    <li><code>enabled</code> — condition; disabled elements play <code>disabledSound</code>.</li>
+    <li><code>blink</code> (seconds per cycle), <code>blinkMin</code> (0–255, default 96), <code>blinkTarget</code>: <code>background content all</code>.</li>
+    <li>Sounds: <code>"Cursor1"</code> or <code>{ name, volume, pitch, pan }</code>; <code>"none"</code> — silent; unset — MZ sound.</li>
+</ul>
+
+<!-- ================================================================== -->
+<h2 id="parent">Nested elements</h2>
+<pre><code>{ "id": "badge", "type": "picture", "image": "pictures/Badge", "parent": "w:_statusWindow", "anchor": "top-right" }</code></pre>
+<p><code>parent</code>: <code>"w:&lt;window field&gt;"</code> or an element id. Geometry is relative to the parent's inner area; the child follows it and hides with it.</p>
+
+</main>
+
+<script src="assets/docs.js"></script>
+</body>
+</html>

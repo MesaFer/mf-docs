@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>MF_SimpleVisual — Script API &amp; versions</title>
+<link rel="stylesheet" href="assets/docs.css">
+</head>
+<body>
+
+<nav>
+    <div class="title"><a href="index.html">MF_SimpleVisual</a></div>
+    <div class="version">v0.8.0 · format v1</div>
+    <div class="search">
+        <input id="filter" type="search" placeholder="Search this page…" aria-label="Search this page" autocomplete="off">
+        <kbd>/</kbd>
+    </div>
+    <div id="results" role="listbox"></div>
+    <ul id="toc">
+        <li><a href="index.html">← Overview</a></li>
+        <li class="group">Script API</li>
+        <li><a href="#stable">Stable API</a></li>
+        <li><a href="#registerAction">registerAction</a></li>
+        <li><a href="#settings">Settings</a></li>
+        <li><a href="#hud">Hud</a></li>
+        <li><a href="#presetio">PresetIO</a></li>
+        <li><a href="#deprecated-api">Deprecated</a></li>
+        <li><a href="#experimental">Experimental members</a></li>
+        <li class="group">Reference</li>
+        <li><a href="#versioning">Versioning policy</a></li>
+        <li><a href="#deprecated-list">Deprecated now</a></li>
+        <li><a href="#dependent">Dependent plugins</a></li>
+        <li><a href="#errors">Error handling</a></li>
+        <li><a href="#changelog">Changelog</a></li>
+    </ul>
+</nav>
+
+<main>
+
+<h1>Script API &amp; versions</h1>
+<p class="lead">Everything is in <code>MF.SimpleVisual</code>. Members listed as stable follow the <a href="#versioning">versioning policy</a>; others are <span class="tag">experimental</span>.</p>
+
+<!-- ================================================================== -->
+<h2 id="stable">Stable API</h2>
+<div class="sig">MF.SimpleVisual.VERSION <span class="ret">→ "0.8.0"</span></div>
+<div class="sig">MF.SimpleVisual.FORMAT_VERSION <span class="ret">→ 1</span></div>
+<div class="sig">MF.SimpleVisual.reload() <span class="ret">→ Promise&lt;data&gt;</span></div>
+<p>Reloads <code>data/SimpleVisual.json</code> and re-applies it to the current scene.</p>
+<div class="sig">MF.SimpleVisual.applyScene(scene?)</div>
+<p>Re-applies the layout (default — current scene).</p>
+<div class="sig">MF.SimpleVisual.layoutFor(scene?) <span class="ret">→ object | null</span></div>
+<p>Resolved layout: inheritance, theme, preset and player settings.</p>
+<div class="sig">MF.SimpleVisual.openCustomScene(id) <span class="ret">→ boolean</span></div>
+<div class="sig">MF.SimpleVisual.setPreset(name | null)</div>
+
+<!-- ================================================================== -->
+<h2 id="registerAction">registerAction</h2>
+<div class="sig">MF.SimpleVisual.registerAction(type, handler, meta?)</div>
+<p><code>handler(action, context)</code>; return <code>false</code> — "not executed". <code>meta</code> describes the action for the editor picker.</p>
+<pre><code>MF.SimpleVisual.registerAction("openQuests", (action, ctx) =&gt; {
+    SceneManager.push(Scene_Quests);
+}, { label: { en: "Open quests", ru: "Открыть задания" }, group: "Plugins",
+     fields: [{ key: "tab", input: "string", label: "Tab" }] });</code></pre>
+<div class="note"><code>input</code>: <code>integer string number boolean json enum</code> (+ <code>options</code>).</div>
+
+<!-- ================================================================== -->
+<h2 id="settings">Settings</h2>
+<div class="sig">Settings.get(key) <span class="ret">→ value | null</span></div>
+<div class="sig">Settings.set(key, value, { save }?)</div>
+<p>Keys: <code>theme windowOpacity fontSize hudPosition</code>. <code>get</code> returns <code>null</code> when the key is not allowed by the parameters.</p>
+
+<!-- ================================================================== -->
+<h2 id="hud">Hud</h2>
+<div class="sig">Hud.show(id?) · Hud.hide(id?) · Hud.isHidden(id?) <span class="ret">→ boolean</span></div>
+<p>Without <code>id</code> — the whole HUD. Stored in the save file.</p>
+
+<!-- ================================================================== -->
+<h2 id="presetio">PresetIO</h2>
+<div class="sig">PresetIO.exportPreset(name) <span class="ret">→ path</span></div>
+<div class="sig">PresetIO.readPreset(file) <span class="ret">→ { name, preset }</span></div>
+<p>NW.js only. Throws with a readable message. Imported presets are upgraded like the file (deprecated properties renamed).</p>
+
+<!-- ================================================================== -->
+<h2 id="deprecated-api">Deprecated</h2>
+<p>Keeps old names working. Warnings go through <a href="../MF_Core/index.html#deprecation"><code>MF.Deprecation</code></a>: once per id, event <code>mf:deprecated</code>, owner <code>MF_SimpleVisual</code>.</p>
+<div class="sig">Deprecated.warn(id, { since, removeIn, replacement, note })</div>
+<div class="sig">Deprecated.method(obj, oldName, { since, removeIn, replacement, fn })</div>
+<p>With <code>fn</code> — redirect to the new function; without — wraps the existing one.</p>
+<div class="sig">Deprecated.property(obj, oldName, newName, info)</div>
+<div class="sig">Deprecated.renameProp(scope, from, to, { since, removeIn, map })</div>
+<p>Renames a file property on load. Scopes: <code>root theme scene window element template sprite menuCommand command preset</code>, <code>"*"</code> — all. Element rules also apply to <code>hover</code> / <code>pressed</code> / <code>disabled</code>. <code>map(value, owner)</code> converts the old value. If both names are present, the new one wins.</p>
+<div class="sig">Deprecated.aliasAction(from, to, { since, removeIn, map })</div>
+<p>Old action type runs as the new one (<code>map(action)</code> may adjust fields).</p>
+<div class="sig">Deprecated.aliasElementType(from, to, { since, removeIn, map })</div>
+<div class="sig">Deprecated.upgradeLayout(layout, path?) <span class="ret">→ layout</span></div>
+<p>Applies all rules in place. Called by the loader and <code>PresetIO</code>.</p>
+<div class="sig">Deprecated.list() <span class="ret">→ [{ id, since, removeIn, replacement, owner, count }]</span></div>
+<div class="sig">Deprecated.rules() <span class="ret">→ { props, actions, elementTypes }</span></div>
+<pre><code>// Example: element property "label" renamed to "caption" in 0.9.0
+Deprecated.renameProp("element", "label", "caption", { since: "0.9.0", removeIn: "1.0.0" });
+// Console (once): SimpleVisual.json: element.label is deprecated since MF_SimpleVisual 0.9.0
+//   and will be removed in 1.0.0. Use "caption" instead. First use: SimpleVisual.json.scenes.Scene_Map.elements[2].</code></pre>
+
+<!-- ================================================================== -->
+<h2 id="experimental">Experimental members <span class="tag">experimental</span></h2>
+<p>Used by the editor; may change in a MINOR release (listed as "Experimental change"): <code>LayoutStore WindowPatcher SceneHook ElementFactory ActionRegistry Template Sources Presets Compat Resolution BattleLayout MenuCommands Scene_Custom ListAdapter CommandAdapter SpritePatcher Parents ThemeManager Fonts Mouse States Sounds SelfTokens MapTokens Dyn PictureDraw</code>, schema constants (<code>*_PROPS</code>, <code>*_TYPES</code>), <code>sanitize</code>, <code>setEditing</code>.</p>
+
+<!-- ================================================================== -->
+<h2 id="versioning">Versioning policy</h2>
+<p>Semver, same rules as <a href="../MF_Core/index.html#versioning">MF_Core</a>.</p>
+<table>
+    <tr><th>Release</th><th>Allowed</th></tr>
+    <tr><td>PATCH</td><td>Bug fixes only</td></tr>
+    <tr><td>MINOR</td><td>New API, properties, actions, element types; deprecations; experimental changes</td></tr>
+    <tr><td>MAJOR</td><td>Removal of previously deprecated names only</td></tr>
+</table>
+<ol>
+    <li><strong>Replace</strong> — the new name is added; the old one keeps working through <code>Deprecated</code> with a one-time warning.</li>
+    <li><strong>Announce</strong> — changelog entry under <em>Deprecated</em> with <code>since</code> / <code>removeIn</code>.</li>
+    <li><strong>Remove</strong> — only in the stated release. Everything deprecated in 0.x works at least until 1.0.0.</li>
+</ol>
+<p>Covers the script API, action types, element types and file properties. Renamed properties are upgraded on load; saving in the editor writes the new names.</p>
+<p><strong>Data format:</strong> an incompatible structure change raises <code>FORMAT_VERSION</code> and adds a migration <code>vN → vN+1</code> (<code>MF.Migration</code>, key <code>"SimpleVisual"</code>). A file of a newer format is loaded with a warning.</p>
+
+<!-- ================================================================== -->
+<h2 id="deprecated-list">Deprecated now</h2>
+<table>
+    <tr><th>Old</th><th>New</th><th>Since</th><th>Remove in</th></tr>
+    <tr><td><code>MF.UIEditor</code></td><td><code>MF.SimpleVisual</code></td><td>0.1.0</td><td>1.0.0</td></tr>
+    <tr><td><code>$dataUILayouts</code></td><td><code>$dataSimpleVisual</code></td><td>0.1.0</td><td>1.0.0</td></tr>
+    <tr><td><code>"layouts"</code> (root)</td><td><code>"scenes"</code> (v0 migration)</td><td>0.1.0</td><td>1.0.0</td></tr>
+</table>
+
+<!-- ================================================================== -->
+<h2 id="dependent">Dependent plugins</h2>
+<pre><code>/*:
+ * @base MF_SimpleVisual
+ * @orderAfter MF_SimpleVisual
+ * @help Requires: MF_SimpleVisual 0.8.0+ (written against 0.8.0)
+ */
+MF.Core.register("MF_MyPlugin", "1.0.0", { requires: { MF_Core: "1.1.0", MF_SimpleVisual: "0.8.0" } });</code></pre>
+<p>Use only the stable API — or pin the exact version if you rely on experimental members.</p>
+
+<!-- ================================================================== -->
+<h2 id="errors">Error handling</h2>
+<table>
+    <tr><th>Situation</th><th>Behavior</th></tr>
+    <tr><td>File missing</td><td>Standard look</td></tr>
+    <tr><td>File broken</td><td>Standard look, console error; the editor refuses to overwrite without confirmation</td></tr>
+    <tr><td>Newer format</td><td>Loaded with a warning</td></tr>
+    <tr><td>Unknown / invalid property</td><td>Ignored, warned once</td></tr>
+    <tr><td>Expression error</td><td>Standard value, warning</td></tr>
+    <tr><td>Unknown action / failing action</td><td>Skipped, logged</td></tr>
+    <tr><td>Condition error</td><td>Element hidden, warned once</td></tr>
+    <tr><td>Deprecated name</td><td>Works, warned once</td></tr>
+</table>
+
+<!-- ================================================================== -->
+<h2 id="changelog">Changelog</h2>
+<p>Full history with tags: <a href="CHANGELOG.html"><code>CHANGELOG.md</code></a>.</p>
+
+</main>
+
+<script src="assets/docs.js"></script>
+</body>
+</html>

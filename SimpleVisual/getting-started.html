@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>MF_SimpleVisual — Getting started</title>
+<link rel="stylesheet" href="assets/docs.css">
+</head>
+<body>
+
+<nav>
+    <div class="title"><a href="index.html">MF_SimpleVisual</a></div>
+    <div class="version">Getting started</div>
+    <ul id="toc">
+        <li><a href="#install">1. Install</a></li>
+        <li><a href="#editor">2. Open the editor</a></li>
+        <li><a href="#window">3. Move a window</a></li>
+        <li><a href="#element">4. Add an element</a></li>
+        <li><a href="#scene">5. Custom scene</a></li>
+        <li><a href="#menu">6. Menu item</a></li>
+        <li><a href="#hud">7. Map HUD</a></li>
+        <li><a href="#next">Next steps</a></li>
+        <li class="group">Pages</li>
+        <li><a href="index.html">Reference →</a></li>
+    </ul>
+</nav>
+
+<main>
+
+<h1>Getting started</h1>
+<p class="lead">From an empty project to a re-arranged menu, a custom scene and a map HUD.</p>
+
+<h2 id="install"><span class="step">1</span>Install</h2>
+<p>Plugin Manager: <code>MF_Core</code> → <code>MF_SimpleVisual</code> → <code>MF_SimpleVisualEditor</code>, all ON. Nothing changes yet — without <code>data/SimpleVisual.json</code> the game looks standard.</p>
+
+<h2 id="editor"><span class="step">2</span>Open the editor</h2>
+<p>Test play, open the main menu, press <kbd>F10</kbd>. Windows get blue outlines, elements green. <kbd>Ctrl+S</kbd> saves, <kbd>Ctrl+Z</kbd> undoes, <kbd>F10</kbd> closes.</p>
+
+<h2 id="window"><span class="step">3</span>Move a window</h2>
+<p>Drag <code>_commandWindow</code> to the right side and hide the gold window (<kbd>Delete</kbd>). The file now contains:</p>
+<pre><code>{
+  "version": 1,
+  "scenes": {
+    "Scene_Menu": {
+      "windows": {
+        "_commandWindow": { "anchor": "top-right", "x": 0, "y": 0, "width": 240 },
+        "_statusWindow":  { "x": 0, "width": "100%-240" },
+        "_goldWindow":    { "visible": false }
+      }
+    }
+  }
+}</code></pre>
+<p class="result">Layouts of <code>Scene_MenuBase</code> apply to every menu — see <a href="format.html#scenes">inheritance</a>.</p>
+
+<h2 id="element"><span class="step">4</span>Add an element</h2>
+<pre><code>"elements": [
+  { "id": "gold", "type": "text", "anchor": "bottom-right", "x": -8, "y": -8,
+    "text": "\\I[314] {game.gold} {game.currency}" }
+]</code></pre>
+
+<h2 id="scene"><span class="step">5</span>Custom scene</h2>
+<p>Editor: Project › New custom scene, or write it:</p>
+<pre><code>"Custom_Bestiary": {
+  "custom": true,
+  "elements": [
+    { "id": "list", "type": "list", "source": "database", "table": "enemies", "width": 300, "height": "100%" },
+    { "id": "info", "type": "window", "x": 300, "width": "100%-300", "height": "100%",
+      "text": "{list.name}\nHP: {list.mhp}" }
+  ]
+}</code></pre>
+
+<h2 id="menu"><span class="step">6</span>Menu item</h2>
+<pre><code>"menuCommands": [
+  { "name": "Bestiary", "symbol": "bestiary", "after": "status",
+    "action": { "type": "custom", "id": "Custom_Bestiary" } }
+]</code></pre>
+
+<h2 id="hud"><span class="step">7</span>Map HUD</h2>
+<pre><code>"Scene_Map": {
+  "elements": [
+    { "id": "hp", "type": "gauge", "member": 0, "stat": "hp", "hud": true, "x": 8, "y": 8, "width": 200 }
+  ]
+}</code></pre>
+<p>Hide it from an event: plugin command <code>HideHud</code>.</p>
+
+<h2 id="next">Next steps</h2>
+<ul>
+    <li><a href="elements.html">All element types</a>, <a href="elements.html#states">hover states</a>, <a href="elements.html#particles">particles</a>.</li>
+    <li><a href="format.html#expressions">Expressions</a> and <a href="format.html#tokens">game values</a>.</li>
+    <li><a href="actions.html#presets">Presets</a>, <a href="actions.html#battle">battle layout</a>.</li>
+    <li>Writing a plugin on top: <a href="api.html#dependent">dependent plugins</a>, <a href="api.html#registerAction">own actions</a>.</li>
+</ul>
+
+</main>
+
+<script src="assets/docs.js"></script>
+</body>
+</html>

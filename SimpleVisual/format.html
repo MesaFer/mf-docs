@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>MF_SimpleVisual — File format</title>
+<link rel="stylesheet" href="assets/docs.css">
+</head>
+<body>
+
+<nav>
+    <div class="title"><a href="index.html">MF_SimpleVisual</a></div>
+    <div class="version">v0.8.0 · format v1</div>
+    <div class="search">
+        <input id="filter" type="search" placeholder="Search this page…" aria-label="Search this page" autocomplete="off">
+        <kbd>/</kbd>
+    </div>
+    <div id="results" role="listbox"></div>
+    <ul id="toc">
+        <li><a href="index.html">← Overview</a></li>
+        <li class="group">File format</li>
+        <li><a href="#root">Root</a></li>
+        <li><a href="#values">Sizes and positions</a></li>
+        <li><a href="#expressions">Expressions</a></li>
+        <li><a href="#tokens">Game values</a></li>
+        <li class="sub"><a href="#tokens-map">Map tokens</a></li>
+        <li class="sub"><a href="#tokens-mouse">Mouse, self, el</a></li>
+        <li><a href="#themes">Themes</a></li>
+        <li><a href="#scenes">Scenes and inheritance</a></li>
+        <li><a href="#windows">Windows</a></li>
+        <li class="sub"><a href="#window-map">Windows of scenes</a></li>
+        <li><a href="#text-style">Text style and fonts</a></li>
+        <li><a href="#rows">Rows and commands</a></li>
+        <li><a href="#sprites">Sprites</a></li>
+        <li><a href="#resolution">Resolution</a></li>
+        <li><a href="#compat">Compatibility</a></li>
+        <li class="group">Pages</li>
+        <li><a href="elements.html">Elements →</a></li>
+        <li><a href="actions.html">Actions &amp; scenes →</a></li>
+        <li><a href="api.html">Script API &amp; versions →</a></li>
+    </ul>
+</nav>
+
+<main>
+
+<h1>File format — <code>data/SimpleVisual.json</code></h1>
+<p class="lead">Format version 1. A file without <code>"version"</code> is treated as v0 and migrated. Missing properties keep the standard value.</p>
+
+<!-- ================================================================== -->
+<h2 id="root">Root</h2>
+<pre><code>{
+  "version": 1,
+  "baseResolution": { "width": 816, "height": 624 },
+  "theme": "default",
+  "themes": { },
+  "scenes": { },
+  "menuCommands": [ ],
+  "presets": { }
+}</code></pre>
+<table>
+    <tr><th>Field</th><th>Type</th><th>Description</th></tr>
+    <tr><td><code>version</code></td><td>number</td><td>Format version (<code>MF.SimpleVisual.FORMAT_VERSION</code>)</td></tr>
+    <tr><td><code>baseResolution</code></td><td>object</td><td>Resolution the layout was made for</td></tr>
+    <tr><td><code>scaleMode</code>, <code>scaleFonts</code></td><td>string, boolean</td><td>See <a href="#resolution">Resolution</a></td></tr>
+    <tr><td><code>theme</code></td><td>string</td><td>Theme for all scenes</td></tr>
+    <tr><td><code>themes</code></td><td>object</td><td>Named themes</td></tr>
+    <tr><td><code>scenes</code></td><td>object</td><td>Key — scene class name or custom scene id</td></tr>
+    <tr><td><code>menuCommands</code></td><td>array</td><td><a href="actions.html#menu">Main menu items</a></td></tr>
+    <tr><td><code>presets</code></td><td>object</td><td><a href="actions.html#presets">Partial layouts</a> over the file</td></tr>
+    <tr><td><code>windowTemplates</code></td><td>object</td><td>Editor only: saved groups of elements</td></tr>
+</table>
+<p>Keys starting with <code>_</code>, <code>comment</code> and <code>extends</code> are never reported as unknown.</p>
+
+<!-- ================================================================== -->
+<h2 id="values">Sizes and positions</h2>
+<table>
+    <tr><th>Value</th><th>Meaning</th></tr>
+    <tr><td><code>240</code></td><td>Pixels</td></tr>
+    <tr><td><code>"50%"</code></td><td>Percent of the container (UI area <code>Graphics.boxWidth/boxHeight</code>, parent, or template row)</td></tr>
+    <tr><td><code>"100%-240"</code>, <code>"(100%-20)/2"</code></td><td>Expression</td></tr>
+    <tr><td><code>"auto"</code></td><td>Height from <code>rows</code> or the number of items</td></tr>
+</table>
+<p><code>anchor</code>: <code>top-left</code> (default), <code>top</code>, <code>top-right</code>, <code>left</code>, <code>center</code>, <code>right</code>, <code>bottom-left</code>, <code>bottom</code>, <code>bottom-right</code>. <code>x</code> / <code>y</code> are offsets from the anchor point.</p>
+
+<!-- ================================================================== -->
+<h2 id="expressions">Expressions</h2>
+<p>Numeric properties (<code>x</code>, <code>y</code>, <code>width</code>, <code>height</code>, <code>rotation</code>, <code>opacity</code>, picture settings, particle numbers) accept expressions of <a href="../MF_Core/index.html#units"><code>MF.Units</code></a> (MF_Core 1.1.0). No <code>eval</code>.</p>
+<ul>
+    <li>Operators: <code>+ - * / ^ ( )</code>, <code>%</code> of the container, <code>&lt; &gt; &lt;= &gt;= == !=</code> (1 / 0), <code>&amp;&amp; || !</code>, <code>cond ? a : b</code>.</li>
+    <li>Functions: <code>min max abs sign floor ceil round trunc sqrt pow exp log mod clamp lerp step between if hypot dist sin cos tan asin acos atan atan2 sind cosd tand atan2d angle deg rad</code>; constants <code>pi</code>, <code>e</code>.</li>
+    <li>Fallback after <code>|</code>: <code>{actor.9.hp|100}</code>, <code>\V[5|0]</code> — used when the value is missing, empty or not a number. Without it: <code>0</code> (in text — empty).</li>
+    <li>An error (syntax, division by zero) keeps the standard value, with a console warning; the editor shows it under the field.</li>
+    <li>Recalculated every 10 frames when inputs change; with <code>{mouse.}</code>, <code>{self.}</code>, <code>{el.}</code>, map tokens — every frame.</li>
+</ul>
+<pre><code>{ "id": "hpBar", "type": "shape", "x": 8, "y": 8, "height": 12, "width": "{leader.hpRate}*2", "fill": "#d04040", "radius": 6 }</code></pre>
+
+<!-- ================================================================== -->
+<h2 id="tokens">Game values</h2>
+<p>Usable in text and expressions.</p>
+<table>
+    <tr><th>Token</th><th>Fields</th></tr>
+    <tr><td><code>{game.*}</code></td><td><code>gold currency steps playtime saveCount battleCount map partySize leader title</code></td></tr>
+    <tr><td><code>{actor.&lt;id&gt;.*}</code>, <code>{member.&lt;n&gt;.*}</code> (n = 1 — first), <code>{leader.*}</code></td><td><code>name nickname className level hp mhp mp mmp tp mtp hpRate mpRate tpRate atk def mat mdf agi luk hit eva cri exp nextExp nextLevelExp levelExp maxLevel weapon equips states profile faceName faceIndex</code></td></tr>
+    <tr><td><code>{item|weapon|armor.&lt;id&gt;.*}</code></td><td><code>name description price count iconIndex</code>…</td></tr>
+    <tr><td><code>{&lt;list id&gt;.&lt;field&gt;}</code></td><td>Selected row of a <a href="elements.html#list">list</a></td></tr>
+    <tr><td><code>\V[n]</code></td><td>Variable</td></tr>
+</table>
+
+<h3 id="tokens-map">Map tokens</h3>
+<table>
+    <tr><th>Token</th><th>Fields</th></tr>
+    <tr><td><code>{player.*}</code>, <code>{event.&lt;id&gt;.*}</code></td><td><code>x y</code> (tile), <code>realX realY</code>, <code>uiX uiY</code> (screen centre in element coordinates), <code>screenX screenY</code>, <code>direction dist angle onScreen exists name</code></td></tr>
+    <tr><td><code>{tile.&lt;x&gt;.&lt;y&gt;.*}</code></td><td><code>uiX uiY screenX screenY dist angle onScreen regionId passable</code></td></tr>
+</table>
+<pre><code>"rotation": "angle({self.centerX}, {self.centerY}, {event.3.uiX|0}, {event.3.uiY|0})"</code></pre>
+
+<h3 id="tokens-mouse">Mouse, self, el</h3>
+<ul>
+    <li><code>{mouse.*}</code>: <code>x y uiX uiY left right middle pressed dragging dragX dragY dragStartX dragStartY clickX clickY clicks rightClicks wheel idle</code>, <code>over.&lt;id&gt; down.&lt;id&gt; relX.&lt;id&gt; relY.&lt;id&gt;</code>.</li>
+    <li><code>{self.*}</code> — the element / window itself, <code>{el.&lt;id&gt;.*}</code> — another element: <code>x y width height centerX centerY right bottom rotation opacity visible hover down relX relY clicks hoverTime time parentWidth parentHeight</code>. Geometry from the previous layout pass.</li>
+</ul>
+<div class="warn">Mouse / self tokens work in numeric properties, not in conditions. <code>hover</code> / <code>relX</code> ignore element rotation.</div>
+
+<!-- ================================================================== -->
+<h2 id="themes">Themes</h2>
+<pre><code>"themes": {
+  "default": { "windowskin": "Window", "fontFace": "rmmz-mainfont", "fontSize": 26, "backOpacity": 192, "padding": 12 },
+  "dark":    { "extends": "default", "label": "Dark", "backOpacity": 230 }
+}</code></pre>
+<p>Style properties: <code>windowskin fontFace fontSize opacity backOpacity contentsOpacity padding</code> + <a href="#text-style">text style</a>, <code>extends</code>, <code>label</code> (name shown to the player). Applied to all windows of a scene; window properties override it.</p>
+
+<!-- ================================================================== -->
+<h2 id="scenes">Scenes and inheritance</h2>
+<pre><code>"Scene_Menu": {
+  "theme": "dark",
+  "windows":  { "_goldWindow": { "visible": false } },
+  "sprites":  { },
+  "elements": [ ]
+}</code></pre>
+<p>The key is the class name; layouts of parent classes are inherited and more specific classes override them: <code>Scene_MenuBase</code> → all menus, <code>Scene_File</code> → <code>Scene_Save</code> / <code>Scene_Load</code>, <code>Scene_Message</code> → <code>Scene_Map</code> / <code>Scene_Battle</code>. Elements with the same <code>id</code> in a child class override inherited ones.</p>
+<table>
+    <tr><th>Field</th><th>Description</th></tr>
+    <tr><td><code>theme</code></td><td>Theme of the scene</td></tr>
+    <tr><td><code>windows</code>, <code>sprites</code>, <code>elements</code></td><td>See below and <a href="elements.html">Elements</a></td></tr>
+    <tr><td><code>skip</code> / <code>force</code></td><td>Leave standard / apply despite <code>autoCompat</code></td></tr>
+    <tr><td><code>custom</code>, <code>background</code>, <code>initialFocus</code></td><td><a href="actions.html#custom">Custom scenes</a></td></tr>
+</table>
+
+<!-- ================================================================== -->
+<h2 id="windows">Windows</h2>
+<p>Key — scene field name (<code>_commandWindow</code>).</p>
+<table>
+    <tr><th>Property</th><th>Description</th></tr>
+    <tr><td><code>x y width height</code></td><td><a href="#values">Size values</a>, expressions</td></tr>
+    <tr><td><code>rows</code></td><td>Rows for <code>"height": "auto"</code></td></tr>
+    <tr><td><code>anchor</code>, <code>visible</code></td><td>Anchor point, visibility</td></tr>
+    <tr><td><code>opacity backOpacity contentsOpacity</code></td><td>0–255, expressions</td></tr>
+    <tr><td><code>padding windowskin fontFace fontSize</code></td><td>Style</td></tr>
+    <tr><td><code>template rowHeight cols rowBackground commands</code></td><td><a href="#rows">Rows and commands</a></td></tr>
+    <tr><td><code>slide</code></td><td><code>Scene_Battle._statusWindow</code>: <code>false</code> — does not slide aside</td></tr>
+</table>
+
+<h3 id="window-map">Windows of scenes</h3>
+<table>
+    <tr><th>Scene</th><th>Windows</th></tr>
+    <tr><td><code>Scene_Title</code></td><td><code>_commandWindow</code></td></tr>
+    <tr><td><code>Scene_Message</code></td><td><code>_messageWindow _goldWindow _nameBoxWindow _choiceListWindow _numberInputWindow _eventItemWindow</code></td></tr>
+    <tr><td><code>Scene_Map</code></td><td><code>_mapNameWindow _scrollTextWindow</code> + messages</td></tr>
+    <tr><td><code>Scene_Menu</code></td><td><code>_commandWindow _goldWindow _statusWindow</code></td></tr>
+    <tr><td><code>Scene_Item</code></td><td><code>_helpWindow _categoryWindow _itemWindow _actorWindow</code></td></tr>
+    <tr><td><code>Scene_Skill</code></td><td><code>_helpWindow _skillTypeWindow _statusWindow _itemWindow _actorWindow</code></td></tr>
+    <tr><td><code>Scene_Equip</code></td><td><code>_helpWindow _statusWindow _commandWindow _slotWindow _itemWindow</code></td></tr>
+    <tr><td><code>Scene_Status</code></td><td><code>_profileWindow _statusWindow _statusParamsWindow _statusEquipWindow</code></td></tr>
+    <tr><td><code>Scene_Options</code></td><td><code>_optionsWindow</code></td></tr>
+    <tr><td><code>Scene_File</code></td><td><code>_helpWindow _listWindow</code></td></tr>
+    <tr><td><code>Scene_GameEnd</code></td><td><code>_commandWindow</code></td></tr>
+    <tr><td><code>Scene_Shop</code></td><td><code>_helpWindow _goldWindow _commandWindow _dummyWindow _numberWindow _statusWindow _buyWindow _categoryWindow _sellWindow</code></td></tr>
+    <tr><td><code>Scene_Name</code></td><td><code>_editWindow _inputWindow</code></td></tr>
+    <tr><td><code>Scene_Battle</code></td><td><code>_logWindow _statusWindow _partyCommandWindow _actorCommandWindow _helpWindow _skillWindow _itemWindow _actorWindow _enemyWindow</code> + messages</td></tr>
+    <tr><td><code>Scene_Debug</code></td><td><code>_rangeWindow _editWindow _debugHelpWindow</code></td></tr>
+</table>
+
+<!-- ================================================================== -->
+<h2 id="text-style">Text style and fonts</h2>
+<p>Windows, text elements and themes: <code>textColor</code> (palette index 0–31 or <code>"#rrggbb"</code>), <code>outlineColor</code>, <code>outlineWidth</code>, <code>fontBold</code>, <code>fontItalic</code>.</p>
+<p><code>fontFace</code>: a family (<code>rmmz-mainfont</code>) or a file in <code>fonts/</code> (<code>"PixelFont.ttf"</code>; ttf, otf, woff, woff2) — loaded at startup.</p>
+
+<!-- ================================================================== -->
+<h2 id="rows">Rows and commands of standard windows</h2>
+<pre><code>"_statusWindow": {
+  "rowHeight": 120,
+  "template": [
+    { "type": "face", "anchor": "top-left", "width": 100, "height": "100%-2" },
+    { "type": "text", "text": "{name}  Lv {level}", "anchor": "top-left", "x": 110 },
+    { "type": "actorGauge", "stat": "hp", "anchor": "top-left", "x": 110, "y": 40 }
+  ]
+},
+"_commandWindow": {
+  "commands": { "item": { "icon": 176 }, "formation": { "visible": false }, "gameEnd": { "order": 0, "text": "Quit" } }
+}</code></pre>
+<p><code>template</code> replaces the standard drawing (see <a href="elements.html#template">row templates</a>). Row data: <code>Window_MenuStatus</code> / <code>Window_BattleStatus</code> — actor fields; <code>Window_ItemList</code> — item + <code>count</code>; <code>Window_SkillList</code> — skill + <code>mpCost tpCost</code>; <code>Window_Command</code> — <code>name symbol index status iconIndex</code>.</p>
+<p><code>commands</code> (Window_Command only): key — symbol or <code>#&lt;index&gt;</code>; <code>text visible order icon align color background</code>.</p>
+
+<!-- ================================================================== -->
+<h2 id="sprites">Sprites</h2>
+<p><code>scenes.&lt;X&gt;.sprites.&lt;field&gt;</code>: <code>_backSprite1 _backSprite2 _gameTitleSprite</code> (title), <code>_backgroundSprite</code> (menus), <code>_cancelButton</code> (battle), <code>_menuButton</code> (map).</p>
+<p>Properties: <code>x y</code> (percent of <code>Graphics.width/height</code>), <code>scaleX scaleY opacity visible image</code>; title: <code>titleText titleFontFace titleFontSize titleColor titleOutlineColor titleOutlineWidth</code>.</p>
+
+<!-- ================================================================== -->
+<h2 id="resolution">Resolution</h2>
+<p><code>"scaleMode": "scale"</code> at the root scales plain pixel <code>x y width height</code> written for <code>baseResolution</code> to the current UI area; <code>"scaleFonts": true</code> scales <code>fontSize</code>. Percentages, <code>auto</code> and expressions are unchanged. Scaling is off in the editor.</p>
+
+<!-- ================================================================== -->
+<h2 id="compat">Compatibility</h2>
+<ul>
+    <li><code>scenes.&lt;X&gt;.skip: true</code> or parameter <code>skipScenes</code> — scene and its child classes stay standard.</li>
+    <li><code>autoCompat</code>: scenes rebuilt by known plugins are skipped unless <code>force: true</code>.</li>
+</ul>
+<table>
+    <tr><th>Plugin</th><th>Skipped scenes</th></tr>
+    <tr><td>VisuMZ_1_MainMenuCore, CGMZ_MenuCommandWindow, AltMenuScreen</td><td><code>Scene_Menu</code></td></tr>
+    <tr><td>VisuMZ_1_ItemsEquipsCore</td><td><code>Scene_Item Scene_Equip Scene_Shop</code></td></tr>
+    <tr><td>VisuMZ_1_SkillsStatesCore</td><td><code>Scene_Skill</code></td></tr>
+    <tr><td>VisuMZ_1_BattleCore</td><td><code>Scene_Battle</code></td></tr>
+    <tr><td>VisuMZ_1_OptionsCore</td><td><code>Scene_Options</code></td></tr>
+    <tr><td>VisuMZ_1_SaveCore, AltSaveScreen</td><td><code>Scene_File</code></td></tr>
+</table>
+<p>Extend: <code>MF.SimpleVisual.KNOWN_PLUGINS.MyPlugin = ["Scene_Status"]</code> before scenes load. Presets <code>altMenu</code> / <code>altSave</code> of the demo replace AltMenuScreen / AltSaveScreen.</p>
+
+</main>
+
+<script src="assets/docs.js"></script>
+</body>
+</html>

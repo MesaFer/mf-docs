@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>MF plugins for RPG Maker MZ — Documentation</title>
+<meta name="description" content="Documentation of SimpleVisual and MF_Core, plugins for RPG Maker MZ: visual layout editor, custom scenes, HUD, particles.">
+<style>
+    :root { --bg: #0b0f26; --panel: #151b3d; --gold: #e2b55a; --gold2: #fff4c2; --fg: #e9dcc0; --muted: #a9a08a; }
+    * { box-sizing: border-box; }
+    body { margin: 0; min-height: 100vh; font: 16px/1.6 Georgia, "Times New Roman", serif; color: var(--fg);
+           background: radial-gradient(ellipse at 50% 0%, #2a3570 0%, var(--bg) 70%) fixed; }
+    main { max-width: 980px; margin: 0 auto; padding: 48px 24px 64px; text-align: center; }
+    .logo { width: min(520px, 90%); filter: drop-shadow(0 6px 10px #000a); }
+    .tag { margin: 8px 0 4px; font-size: 20px; }
+    .sub { color: var(--muted); margin: 0 0 18px; }
+    .divider { width: 300px; max-width: 70%; margin: 18px auto; display: block; }
+    .cta { display: inline-block; margin: 6px; padding: 10px 22px; border: 2px solid var(--gold); border-radius: 8px;
+           color: var(--gold2); text-decoration: none; background: #1b2455; }
+    .cta.main { background: linear-gradient(#e2b55a, #b9832e); color: #1a1206; font-weight: bold; }
+    .cta:hover { filter: brightness(1.15); }
+    .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 18px; margin: 28px 0; text-align: left; }
+    .card { background: var(--panel); border: 1px solid #e2b55a55; border-radius: 12px; padding: 18px 20px; }
+    .card h2 { margin: 0 0 4px; font-size: 22px; color: var(--gold); }
+    .card .ver { font: 12px ui-monospace, Consolas, monospace; color: var(--muted); }
+    .card p { margin: 8px 0 12px; }
+    .card a { color: var(--gold2); }
+    .card ul { margin: 0; padding-left: 18px; }
+    .gifs { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 14px; margin-top: 10px; }
+    .gifs figure { margin: 0; background: var(--panel); border: 1px solid #e2b55a33; border-radius: 10px; overflow: hidden; }
+    .gifs img { width: 100%; aspect-ratio: 816 / 624; object-fit: cover; display: block; background: #05071a; }
+    .gifs figcaption { padding: 6px; font-size: 14px; color: var(--muted); }
+    footer { margin-top: 40px; font-size: 13px; color: var(--muted); }
+    footer a { color: var(--muted); }
+</style>
+</head>
+<body>
+<main>
+    <img class="logo" src="assets/SV_Logo.png" alt="SimpleVisual">
+    <p class="tag">Re-design every screen of RPG Maker MZ. Visually. Without code.</p>
+    <p class="sub">Title · Menus · Battle · Map HUD · Custom scenes</p>
+    <a class="cta main" href="SimpleVisual/getting-started.html">Get started</a>
+    <a class="cta" href="SimpleVisual/index.html">Reference</a>
+    <a class="cta" href="https://mesafer.itch.io/rpgmaker-mz-mf-simplevisual-plugin">Get it on itch.io</a>
+
+    <img class="divider" src="assets/SV_Divider.png" alt="">
+
+    <div class="grid">
+        <section class="card">
+            <h2>SimpleVisual</h2>
+            <div class="ver">MF_SimpleVisual 0.8.0 · Editor 0.7.0 · format v1</div>
+            <p>A layout runtime and an in-game visual editor (F10). You can move windows, add pictures, gauges, buttons, lists and particles, and build custom scenes and a map HUD.</p>
+            <ul>
+                <li><a href="SimpleVisual/getting-started.html">Getting started</a></li>
+                <li><a href="SimpleVisual/format.html">File format</a> · <a href="SimpleVisual/elements.html">Elements</a> · <a href="SimpleVisual/actions.html">Actions &amp; scenes</a></li>
+                <li><a href="SimpleVisual/api.html">Script API &amp; versions</a> · <a href="SimpleVisual/CHANGELOG.html">Changelog</a></li>
+            </ul>
+        </section>
+        <section class="card">
+            <h2>MF_Core</h2>
+            <div class="ver">MF_Core 1.1.0 · required by all MF plugins</div>
+            <p>The base library for plugin developers: layout units and expressions, conditions, data and save storage, hooks, events, input, tweens and UI primitives.</p>
+            <ul>
+                <li><a href="MF_Core/getting-started.html">Getting started: write an MF plugin</a></li>
+                <li><a href="MF_Core/index.html">API reference</a> · <a href="MF_Core/CHANGELOG.html">Changelog</a></li>
+            </ul>
+        </section>
+    </div>
+
+    <div class="gifs">
+        <figure><img src="SimpleVisual/media/01_editor_overview.gif" alt="Visual editor" loading="lazy"><figcaption>Visual editor</figcaption></figure>
+        <figure><img src="SimpleVisual/media/05_particles.gif" alt="Particles" loading="lazy"><figcaption>Particles</figcaption></figure>
+        <figure><img src="SimpleVisual/media/06_custom_scenes.gif" alt="Custom scenes" loading="lazy"><figcaption>Custom scenes</figcaption></figure>
+        <figure><img src="SimpleVisual/media/07_map_hud.gif" alt="Map HUD" loading="lazy"><figcaption>Map HUD</figcaption></figure>
+    </div>
+
+    <footer>
+        © 2026 MesaFer · Documentation only; the plugins are sold on <a href="https://mesafer.itch.io/rpgmaker-mz-mf-simplevisual-plugin">itch.io</a> ·
+        <a href="https://github.com/MesaFer/mf-docs/issues">Report a docs mistake</a>
+    </footer>
+</main>
+</body>
+</html>

@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>MF_SimpleVisual — Reference</title>
+<link rel="stylesheet" href="assets/docs.css">
+</head>
+<body>
+
+<nav>
+    <div class="title"><a href="index.html">MF_SimpleVisual</a></div>
+    <div class="version">v0.8.0 · format v1 · RPG Maker MZ</div>
+    <div class="search">
+        <input id="filter" type="search" placeholder="Search this page…" aria-label="Search this page" autocomplete="off">
+        <kbd>/</kbd>
+    </div>
+    <div id="results" role="listbox"></div>
+    <ul id="toc">
+        <li class="group">Start here</li>
+        <li><a href="getting-started.html">Getting started →</a></li>
+        <li><a href="#overview">Overview</a></li>
+        <li><a href="#install">Installation</a></li>
+        <li><a href="#params">Parameters</a></li>
+        <li><a href="#commands">Plugin commands</a></li>
+        <li><a href="#pitfalls">Pitfalls</a></li>
+        <li class="group">Pages</li>
+        <li><a href="format.html">File format →</a></li>
+        <li><a href="elements.html">Elements →</a></li>
+        <li><a href="actions.html">Actions &amp; scenes →</a></li>
+        <li><a href="api.html">Script API &amp; versions →</a></li>
+        <li><a href="../MF_Core/index.html">MF_Core reference →</a></li>
+    </ul>
+</nav>
+
+<main>
+
+<h1>MF_SimpleVisual — Reference</h1>
+<p class="lead">Declarative UI layout for RPG Maker MZ: re-arrange windows of built-in scenes, add pictures, text, gauges, buttons, lists and particles, build custom scenes, map HUD and battle layouts — all from <code>data/SimpleVisual.json</code>, with a visual editor (<code>MF_SimpleVisualEditor</code>, F10 in test play).</p>
+
+<div class="cards">
+    <a class="card" href="getting-started.html"><strong>New here?</strong><span>Install, first layout, first custom scene</span></a>
+    <a class="card" href="format.html"><strong>File format</strong><span>Root, themes, scenes, windows, values and expressions</span></a>
+    <a class="card" href="elements.html"><strong>Elements</strong><span>All element types and their properties</span></a>
+    <a class="card" href="actions.html"><strong>Actions &amp; scenes</strong><span>Actions, conditions, custom scenes, HUD, battle, presets</span></a>
+    <a class="card" href="api.html"><strong>Script API &amp; versions</strong><span>Stable API, deprecation, versioning policy</span></a>
+</div>
+
+<!-- ================================================================== -->
+<h2 id="overview">Overview</h2>
+<table>
+    <tr><th>Plugin</th><th>Version</th><th>Role</th></tr>
+    <tr><td><code>MF_Core</code></td><td>1.1.0+</td><td>Required base library (units, expressions, conditions, data files, saves)</td></tr>
+    <tr><td><code>MF_SimpleVisual</code></td><td>0.8.0</td><td>Runtime: reads the file and applies it. Needed in the released game</td></tr>
+    <tr><td><code>MF_SimpleVisualEditor</code></td><td>0.7.0</td><td>Visual editor, test play only. Does nothing in a deployed game</td></tr>
+</table>
+<p>The layout file is optional: without it (or with <code>enabled</code> off) the game keeps the standard look. A broken file is reported in the console and ignored.</p>
+<table>
+    <tr><th>What</th><th>Where</th></tr>
+    <tr><td>Windows of built-in scenes: position, size, anchor, opacity, skin, font</td><td><a href="format.html#windows">File format › Windows</a></td></tr>
+    <tr><td>Rows of standard lists, command items of standard menus</td><td><a href="format.html#rows">File format › Rows and commands</a></td></tr>
+    <tr><td>Backgrounds and title sprites</td><td><a href="format.html#sprites">File format › Sprites</a></td></tr>
+    <tr><td>Pictures, text, gauges, buttons, shapes, lists, particles</td><td><a href="elements.html">Elements</a></td></tr>
+    <tr><td>Custom scenes, main menu items</td><td><a href="actions.html#custom">Custom scenes</a>, <a href="actions.html#menu">Main menu</a></td></tr>
+    <tr><td>Map HUD, battle screen</td><td><a href="actions.html#hud">HUD</a>, <a href="actions.html#battle">Battle</a></td></tr>
+    <tr><td>Themes, player options, presets</td><td><a href="format.html#themes">Themes</a>, <a href="actions.html#settings">Player settings</a>, <a href="actions.html#presets">Presets</a></td></tr>
+</table>
+
+<!-- ================================================================== -->
+<h2 id="install">Installation</h2>
+<ol>
+    <li>Copy <code>MF_Core.js</code>, <code>MF_SimpleVisual.js</code> and (for development) <code>MF_SimpleVisualEditor.js</code> to <code>js/plugins/</code>.</li>
+    <li>Order in the Plugin Manager: <code>MF_Core</code> → <code>MF_SimpleVisual</code> → <code>MF_SimpleVisualEditor</code>. Place SimpleVisual below plugins that change windows.</li>
+    <li>Start test play, open any scene, press <kbd>F10</kbd>. Saving creates <code>data/SimpleVisual.json</code> (backup <code>SimpleVisual.bak.json</code>).</li>
+</ol>
+
+<!-- ================================================================== -->
+<h2 id="params">Parameters</h2>
+<table>
+    <tr><th>Parameter</th><th>Default</th><th>Description</th></tr>
+    <tr><td><code>enabled</code></td><td><code>true</code></td><td>Off — safe mode, everything standard</td></tr>
+    <tr><td><code>optTheme</code></td><td><code>true</code></td><td>Options: the player chooses the UI theme</td></tr>
+    <tr><td><code>themeList</code></td><td>empty</td><td>Comma separated themes offered to the player; empty — all</td></tr>
+    <tr><td><code>optWindowOpacity</code></td><td><code>true</code></td><td>Options: window background opacity</td></tr>
+    <tr><td><code>optFontSize</code></td><td><code>false</code></td><td>Options: font size of windows</td></tr>
+    <tr><td><code>optHudPosition</code></td><td><code>false</code></td><td>Options: anchor of HUD elements</td></tr>
+    <tr><td><code>skipScenes</code></td><td>empty</td><td>Scene classes left completely standard (<code>Scene_Shop, Scene_Equip</code>)</td></tr>
+    <tr><td><code>autoCompat</code></td><td><code>true</code></td><td>Scenes rebuilt by known plugins are left alone unless <code>force: true</code> — see <a href="format.html#compat">Compatibility</a></td></tr>
+</table>
+
+<!-- ================================================================== -->
+<h2 id="commands">Plugin commands</h2>
+<table>
+    <tr><th>Command</th><th>Arguments</th><th>Effect</th></tr>
+    <tr><td><code>OpenCustomScene</code></td><td><code>id</code></td><td>Opens <code>scenes.&lt;id&gt;</code> with <code>"custom": true</code></td></tr>
+    <tr><td><code>SetLayoutPreset</code></td><td><code>preset</code></td><td>Activates a preset (empty — none). Stored in the save file</td></tr>
+    <tr><td><code>ShowHud</code> / <code>HideHud</code></td><td><code>id</code></td><td>One HUD element or (empty) the whole HUD. Stored in the save file</td></tr>
+</table>
+
+<!-- ================================================================== -->
+<h2 id="pitfalls">Pitfalls</h2>
+<ul class="pitfalls-list">
+    <li id="pitfall-order"><strong>Order: MF_Core first, SimpleVisual below window plugins</strong>Layouts are applied after <code>create()</code> / <code>start()</code>. A plugin that moves windows every frame overwrites them — skip that scene.<div class="see">See: <a href="format.html#compat">Compatibility</a></div></li>
+    <li id="pitfall-unknown"><strong>Unknown or invalid properties are ignored</strong>With one console warning each. Check the console (F8) when a property "does nothing".<div class="see">See: <a href="api.html#errors">Error handling</a></div></li>
+    <li id="pitfall-backslash"><strong>Backslashes are doubled in JSON</strong><code>"\\V[1]"</code>, <code>"\\C[2]"</code>. The editor does this for you.</li>
+    <li id="pitfall-script"><strong><code>script</code> actions need MF_Core <em>Allow Scripts</em></strong>Otherwise they do nothing. Prefer <code>call</code> and <code>pluginCommand</code>.<div class="see">See: <a href="actions.html#actions">Actions</a></div></li>
+    <li id="pitfall-message"><strong>Message windows reposition themselves</strong><code>_messageWindow</code> recalculates <code>y</code> for every message (top / middle / bottom).</li>
+    <li id="pitfall-interactive"><strong><code>command</code> and <code>list</code> are interactive only in custom scenes</strong>Elsewhere they only display.</li>
+    <li id="pitfall-deprecated"><strong>Deprecated names still work — for now</strong>A one-time console warning names the replacement and the removal version. Save the file in the editor to upgrade it.<div class="see">See: <a href="api.html#versioning">Versioning policy</a></div></li>
+</ul>
+
+</main>
+
+<script src="assets/docs.js"></script>
+</body>
+</html>

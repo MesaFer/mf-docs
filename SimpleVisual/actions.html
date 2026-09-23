@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>MF_SimpleVisual — Actions &amp; scenes</title>
+<link rel="stylesheet" href="assets/docs.css">
+</head>
+<body>
+
+<nav>
+    <div class="title"><a href="index.html">MF_SimpleVisual</a></div>
+    <div class="version">v0.8.0 · format v1</div>
+    <div class="search">
+        <input id="filter" type="search" placeholder="Search this page…" aria-label="Search this page" autocomplete="off">
+        <kbd>/</kbd>
+    </div>
+    <div id="results" role="listbox"></div>
+    <ul id="toc">
+        <li><a href="index.html">← Overview</a></li>
+        <li class="group">Actions &amp; scenes</li>
+        <li><a href="#actions">Actions</a></li>
+        <li class="sub"><a href="#system">system ops</a></li>
+        <li><a href="#conditions">Conditions</a></li>
+        <li><a href="#custom">Custom scenes</a></li>
+        <li><a href="#menu">Main menu items</a></li>
+        <li><a href="#presets">Presets</a></li>
+        <li><a href="#hud">HUD</a></li>
+        <li><a href="#battle">Battle</a></li>
+        <li><a href="#settings">Player settings</a></li>
+        <li class="group">Pages</li>
+        <li><a href="format.html">File format →</a></li>
+        <li><a href="elements.html">Elements →</a></li>
+        <li><a href="api.html">Script API &amp; versions →</a></li>
+    </ul>
+</nav>
+
+<main>
+
+<h1>Actions &amp; scenes</h1>
+
+<!-- ================================================================== -->
+<h2 id="actions">Actions</h2>
+<p><code>action</code>, <code>onCancel</code>, menu items — one action or an array (run in order).</p>
+<table>
+    <tr><th>type</th><th>Parameters</th><th>Effect</th></tr>
+    <tr><td><code>scene</code></td><td><code>name</code></td><td><code>SceneManager.push</code> of a scene class</td></tr>
+    <tr><td><code>back</code></td><td>—</td><td><code>SceneManager.pop</code></td></tr>
+    <tr><td><code>custom</code></td><td><code>id</code></td><td>Opens a <a href="#custom">custom scene</a></td></tr>
+    <tr><td><code>focus</code></td><td><code>target</code></td><td>Activates a <code>command</code> / <code>list</code> of a custom scene</td></tr>
+    <tr><td><code>commonEvent</code></td><td><code>id</code></td><td>Reserves a common event (leaves menus to the map)</td></tr>
+    <tr><td><code>switch</code></td><td><code>id</code>, <code>value</code>: <code>true false "toggle"</code></td><td></td></tr>
+    <tr><td><code>variable</code></td><td><code>id</code>, <code>op</code>: <code>set add sub mul div mod</code>, <code>value</code></td><td></td></tr>
+    <tr><td><code>se</code></td><td><code>name volume pitch pan</code></td><td>Plays a sound</td></tr>
+    <tr><td><code>system</code></td><td><code>op</code></td><td><a href="#system">Standard commands</a></td></tr>
+    <tr><td><code>pluginCommand</code></td><td><code>plugin command args</code></td><td>Plugin command of any plugin</td></tr>
+    <tr><td><code>call</code></td><td><code>fn</code> (<code>"MyPlugin.open"</code>), <code>args</code></td><td>Function by path, no eval</td></tr>
+    <tr><td><code>script</code></td><td><code>code</code></td><td>Only with MF_Core <em>Allow Scripts</em></td></tr>
+</table>
+<p>Own types: <code>MF.SimpleVisual.registerAction(type, handler, meta)</code> — see <a href="api.html#registerAction">Script API</a>.</p>
+
+<h3 id="system">system ops</h3>
+<p><code>menu item skill equip status options save load gameEnd newGame title map exit</code>.</p>
+
+<!-- ================================================================== -->
+<h2 id="conditions">Conditions</h2>
+<p><code>condition</code>, <code>enabled</code>, <code>visible</code> of items — <a href="../MF_Core/index.html#condition"><code>MF.Condition</code></a>:</p>
+<pre><code>{ "switch": 12 }
+{ "variable": 5, "op": "&gt;=", "value": 3 }
+{ "gold": 100, "op": "&gt;=" }
+{ "all": [ { "switch": 1 }, { "switch": 2 } ] }
+{ "any": [ { "switch": 1 }, { "switch": 2 } ] }</code></pre>
+
+<!-- ================================================================== -->
+<h2 id="custom">Custom scenes</h2>
+<pre><code>"Custom_Bestiary": {
+  "custom": true, "background": "blur", "initialFocus": "list",
+  "elements": [
+    { "id": "list", "type": "list", "source": "database", "table": "enemies",
+      "y": 124, "width": 300, "height": "100%-124",
+      "template": [ { "type": "text", "text": "{name}", "x": 8, "width": "100%-16" } ] },
+    { "id": "info", "type": "window", "x": 300, "y": 124, "width": "100%-300", "height": "100%-124",
+      "text": "\\C[16]{list.name}\\C[0]\nHP: {list.mhp}" }
+  ]
+}</code></pre>
+<table>
+    <tr><th>Field</th><th>Description</th></tr>
+    <tr><td><code>custom</code></td><td><code>true</code> — opened by <code>{ "type": "custom", "id": … }</code> or <code>OpenCustomScene</code></td></tr>
+    <tr><td><code>background</code></td><td><code>"blur"</code> (default), <code>"none"</code>, picture <code>"titles1/Beach"</code></td></tr>
+    <tr><td><code>initialFocus</code></td><td>Active <code>command</code> / <code>list</code> id (default — first visible)</td></tr>
+</table>
+<p>Layout chain: <code>Scene_MenuBase</code> → <code>Scene_Custom</code> (all custom scenes) → <code>&lt;id&gt;</code>. Cancel defaults to <code>back</code>; clicking an inactive list focuses it.</p>
+
+<!-- ================================================================== -->
+<h2 id="menu">Main menu items</h2>
+<pre><code>"menuCommands": [
+  { "name": "Bestiary", "symbol": "bestiary", "after": "status",
+    "enabled": { "switch": 10 }, "action": { "type": "custom", "id": "Custom_Bestiary" } }
+]</code></pre>
+<p><code>after</code> / <code>before</code>: <code>item skill equip status formation options save gameEnd</code>; default — before <code>options</code>. <code>visible</code> / <code>enabled</code> — conditions.</p>
+
+<!-- ================================================================== -->
+<h2 id="presets">Presets</h2>
+<pre><code>"presets": {
+  "compact": { "scenes": { "Scene_Menu": { "windows": { "_goldWindow": { "visible": false } } } } }
+}</code></pre>
+<p>Partial layout merged over the file; arrays (<code>elements</code>) replace the originals. Switch: <code>SetLayoutPreset</code> or <code>MF.SimpleVisual.setPreset(name)</code>; stored in the save. Files: <code>data/SimpleVisualPresets/&lt;name&gt;.json</code> — <code>{ "format": "SimpleVisualPreset", "version": 1, "name", "preset" }</code> (editor: Project › Presets).</p>
+
+<!-- ================================================================== -->
+<h2 id="hud">HUD</h2>
+<pre><code>{ "id": "hp", "type": "gauge", "member": 0, "stat": "hp", "hud": true, "x": 8, "y": 8, "width": 200,
+  "hideOnMessage": true, "hideOnEvent": false, "fadeFrames": 12, "fadeUnderPlayer": 96 }</code></pre>
+<table>
+    <tr><th>Property</th><th>Default</th><th>Description</th></tr>
+    <tr><td><code>hideOnMessage</code></td><td><code>true</code> on the map</td><td>Hide while a message is shown</td></tr>
+    <tr><td><code>hideOnEvent</code></td><td><code>false</code></td><td>Hide while an event runs</td></tr>
+    <tr><td><code>fadeFrames</code></td><td><code>12</code></td><td>Fade duration, 0 — instant</td></tr>
+    <tr><td><code>fadeUnderPlayer</code></td><td>—</td><td>Opacity 0–255 while the player is behind</td></tr>
+</table>
+<p>Hidden in the menu snapshot and during the encounter effect. <code>ShowHud</code> / <code>HideHud</code>; the player may choose the anchor (<code>optHudPosition</code>).</p>
+
+<!-- ================================================================== -->
+<h2 id="battle">Battle</h2>
+<ul>
+    <li>Windows: see <a href="format.html#window-map">Scene_Battle</a>; shared map + battle layout — <code>scenes.Scene_Message</code>.</li>
+    <li><code>_statusWindow</code> slides relative to its new position; <code>"slide": false</code> — never.</li>
+    <li><code>_actorWindow</code> / <code>_enemyWindow</code> take the geometry of <code>_statusWindow</code> unless set.</li>
+    <li>Rows of <code>Window_BattleStatus</code>: <code>template</code> with actor fields, <code>actorGauge</code>, <code>actorState</code>.</li>
+    <li>Elements with <code>"parent": "w:&lt;window&gt;"</code> fade with the window open / close animation.</li>
+</ul>
+
+<!-- ================================================================== -->
+<h2 id="settings">Player settings</h2>
+<p>Stored in <code>config.rmmzsave</code> (<code>MF.Config</code>, key <code>MF_SimpleVisual</code>): <code>{ "theme", "windowOpacity", "fontSize", "hudPosition" }</code>; <code>null</code> — developer value. Only keys allowed by the <a href="index.html#params">parameters</a> are applied and shown in <code>Scene_Options</code>.</p>
+
+</main>
+
+<script src="assets/docs.js"></script>
+</body>
+</html>
