@@ -97,14 +97,19 @@
   { "name": "Bestiary", "symbol": "bestiary", "after": "status",
     "enabled": { "switch": 10 }, "action": { "type": "custom", "id": "Custom_Bestiary" } }
 ]</code></pre>
-<p><code>after</code> / <code>before</code>: <code>item skill equip status formation options save gameEnd</code>; default — before <code>options</code>. <code>visible</code> / <code>enabled</code> — conditions.</p>
+<p><code>after</code> / <code>before</code>: <code>item skill equip status formation options save gameEnd</code> or the symbol of another own command; default — before <code>options</code>. <code>visible</code> / <code>enabled</code> — conditions. The action is read when the command is chosen, so edits work without reopening the menu.</p>
+<p>Editor, no JSON needed:</p>
+<ul>
+<li><b>Main menu › select the command window › Edit commands</b>: <b>+ item</b> adds a command after the selected one; an own command has Name, <b>On select (action)</b> (⚡ — the same action editor as buttons), <code>enabled</code>, ↑ / ↓ and <b>Delete command</b>. Standard commands get <code>action</code> / <code>enabled</code> overrides (<a href="format.html#rows"><code>commands</code></a>).</li>
+<li><b>Project › Main menu commands</b>: the same list as cards (symbol, position after / before, conditions). The raw JSON is under <b>JSON</b>.</li>
+</ul>
 
 <!-- ================================================================== -->
 <h2 id="presets">Presets</h2>
 <pre><code>"presets": {
   "compact": { "scenes": { "Scene_Menu": { "windows": { "_goldWindow": { "visible": false } } } } }
 }</code></pre>
-<p>Partial layout merged over the file; arrays (<code>elements</code>) replace the originals. Switch: <code>SetLayoutPreset</code> or <code>MF.SimpleVisual.setPreset(name)</code>; stored in the save. Files: <code>data/SimpleVisualPresets/&lt;name&gt;.json</code> — <code>{ "format": "SimpleVisualPreset", "version": 1, "name", "preset" }</code> (editor: Project › Presets).</p>
+<p>Partial layout merged over the file; arrays (<code>elements</code>) replace the originals. Switch: <code>SetLayoutPreset</code> or <code>MF.SimpleVisual.setPreset(name)</code>; stored in the save. Files: <code>data/SimpleVisualPresets/&lt;name&gt;.json</code> — <code>{ "format": "SimpleVisualPreset", "version": 1, "name", "preset" }</code> (editor: Project › Presets — preview, export / import, rename, duplicate, delete; the preset content is edited as JSON).</p>
 
 <!-- ================================================================== -->
 <h2 id="hud">HUD</h2>

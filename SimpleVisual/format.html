@@ -196,10 +196,18 @@
   ]
 },
 "_commandWindow": {
-  "commands": { "item": { "icon": 176 }, "formation": { "visible": false }, "gameEnd": { "order": 0, "text": "Quit" } }
+  "commands": {
+    "item": { "icon": 176 }, "formation": { "visible": false }, "gameEnd": { "order": 0, "text": "Quit" },
+    "status": { "action": { "type": "custom", "id": "Custom_Party" }, "enabled": { "switch": 3 } }
+  }
 }</code></pre>
 <p><code>template</code> replaces the standard drawing (see <a href="elements.html#template">row templates</a>). Row data: <code>Window_MenuStatus</code> / <code>Window_BattleStatus</code> — actor fields; <code>Window_ItemList</code> — item + <code>count</code>; <code>Window_SkillList</code> — skill + <code>mpCost tpCost</code>; <code>Window_Command</code> — <code>name symbol index status iconIndex</code>.</p>
-<p><code>commands</code> (Window_Command only): key — symbol or <code>#&lt;index&gt;</code>; <code>text visible order icon align color background</code>.</p>
+<p><code>commands</code> (Window_Command only): key — symbol or <code>#&lt;index&gt;</code>; <code>text visible order icon align color background action enabled</code>.</p>
+<ul>
+<li><code>action</code> — an <a href="actions.html">action</a> (or a list) run instead of the command's own handler, like a button. Works in any command window: title, main menu, options, shop…</li>
+<li><code>enabled</code> — condition; <code>false</code> greys the command out.</li>
+</ul>
+<p>Editor: select the window › <b>Edit commands</b>. In the main menu, <b>+ item</b> adds an own command (<a href="actions.html#menu"><code>menuCommands</code></a>); own commands can be deleted, standard ones hidden.</p>
 
 <!-- ================================================================== -->
 <h2 id="sprites">Sprites</h2>

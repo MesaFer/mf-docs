@@ -29,8 +29,8 @@ SimpleVisual: re-design every screen of RPG Maker MZ, visually, without code.</p
 
 | | |
 |:---:|:---:|
-| ![Editor](SimpleVisual/media/01_editor_overview.gif)<br>**Visual editor** | ![Before / after](SimpleVisual/media/02_before_after.gif)<br>**Before / after** |
-| ![Particles](SimpleVisual/media/05_particles.gif)<br>**Particles** | ![Map HUD](SimpleVisual/media/07_map_hud.gif)<br>**Map HUD** |
+| ![Editor](SimpleVisual/assets/gifs/editor.gif)<br>**Visual editor** | ![Custom scenes](SimpleVisual/assets/gifs/custom_scenes.gif)<br>**Custom scenes** |
+| ![Particles](SimpleVisual/assets/gifs/particles.gif)<br>**Particles** | ![Map HUD](SimpleVisual/assets/gifs/map_hud.gif)<br>**Map HUD** |
 
 ## Changelogs
 
@@ -43,7 +43,7 @@ SimpleVisual: re-design every screen of RPG Maker MZ, visually, without code.</p
 index.html        landing page of the site
 assets/           logo and divider of the landing page
 MF_Core/          MF_Core reference (HTML) and changelog
-SimpleVisual/     SimpleVisual reference (HTML), GIFs and changelog
+SimpleVisual/     SimpleVisual reference (HTML), changelog; GIFs in assets/gifs/
 ```
 
 The site is static HTML with no build step, served by GitHub Pages from the `main` branch. To read it offline, open `index.html` locally.

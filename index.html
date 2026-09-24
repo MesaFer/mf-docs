@@ -26,9 +26,10 @@
     .card p { margin: 8px 0 12px; }
     .card a { color: var(--gold2); }
     .card ul { margin: 0; padding-left: 18px; }
-    .gifs { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 14px; margin-top: 10px; }
+    .gifs { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; margin-top: 10px; }
+    @media (max-width: 700px) { .gifs { grid-template-columns: 1fr; } }
     .gifs figure { margin: 0; background: var(--panel); border: 1px solid #e2b55a33; border-radius: 10px; overflow: hidden; }
-    .gifs img { width: 100%; aspect-ratio: 816 / 624; object-fit: cover; display: block; background: #05071a; }
+    .gifs img { width: 100%; aspect-ratio: 720 / 480; object-fit: cover; display: block; background: #05071a; }
     .gifs figcaption { padding: 6px; font-size: 14px; color: var(--muted); }
     footer { margin-top: 40px; font-size: 13px; color: var(--muted); }
     footer a { color: var(--muted); }
@@ -68,10 +69,10 @@
     </div>
 
     <div class="gifs">
-        <figure><img src="SimpleVisual/media/01_editor_overview.gif" alt="Visual editor" loading="lazy"><figcaption>Visual editor</figcaption></figure>
-        <figure><img src="SimpleVisual/media/05_particles.gif" alt="Particles" loading="lazy"><figcaption>Particles</figcaption></figure>
-        <figure><img src="SimpleVisual/media/06_custom_scenes.gif" alt="Custom scenes" loading="lazy"><figcaption>Custom scenes</figcaption></figure>
-        <figure><img src="SimpleVisual/media/07_map_hud.gif" alt="Map HUD" loading="lazy"><figcaption>Map HUD</figcaption></figure>
+        <figure><img src="SimpleVisual/assets/gifs/editor.gif" alt="Visual editor" loading="lazy"><figcaption>Visual editor</figcaption></figure>
+        <figure><img src="SimpleVisual/assets/gifs/custom_scenes.gif" alt="Custom scenes" loading="lazy"><figcaption>Custom scenes</figcaption></figure>
+        <figure><img src="SimpleVisual/assets/gifs/particles.gif" alt="Particles" loading="lazy"><figcaption>Particles</figcaption></figure>
+        <figure><img src="SimpleVisual/assets/gifs/map_hud.gif" alt="Map HUD" loading="lazy"><figcaption>Map HUD</figcaption></figure>
     </div>
 
     <footer>
