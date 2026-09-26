@@ -6,7 +6,7 @@ SimpleVisual: re-design every screen of RPG Maker MZ, visually, without code.</p
 <p align="center">
 <a href="https://mesafer.github.io/mf-docs"><img alt="site" src="https://img.shields.io/badge/docs-online-c9a227?style=flat-square"></a>
 <img alt="MF_SimpleVisual" src="https://img.shields.io/badge/MF__SimpleVisual-0.8.0-1b2455?style=flat-square">
-<img alt="MF_Core" src="https://img.shields.io/badge/MF__Core-1.1.0-1b2455?style=flat-square">
+<img alt="MF_Core" src="https://img.shields.io/badge/MF__Core-1.2.1-1b2455?style=flat-square">
 <img alt="RPG Maker MZ" src="https://img.shields.io/badge/RPG%20Maker%20MZ-1.8%2B-1b2455?style=flat-square">
 <a href="https://mesafer.itch.io/rpgmaker-mz-mf-simplevisual-plugin"><img alt="itch.io" src="https://img.shields.io/badge/get%20it%20on-itch.io-fa5c5c?style=flat-square"></a>
 </p>
